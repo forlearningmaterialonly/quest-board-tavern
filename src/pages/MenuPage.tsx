@@ -72,7 +72,7 @@ const MenuPage = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="font-heading font-bold text-3xl md:text-5xl mb-4 glow-text">
-            {t("Thực đơn quán rượu", "Tavern Menu")}
+            {t("Thực đơn", "Café Menu")}
           </h1>
           <p className="text-muted-foreground max-w-lg mx-auto">
             {t("Nạp năng lượng cho cuộc phiêu lưu tiếp theo", "Fuel up for your next adventure")}
