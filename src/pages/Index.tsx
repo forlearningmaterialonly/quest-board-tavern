@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Dice5, Users, Coffee, Gamepad2, Star, ArrowRight, Shuffle, Sword, Shield, Map } from "lucide-react";
 import heroImage from "@/assets/hero-tavern.jpg";
-import cafeImage from "@/assets/cafe-interior.jpg";
+import boardgameImage from "@/assets/boardgame-table.jpg";
+import AnimatedDice from "@/components/AnimatedDice";
 
 const featuredGames = [
   { name: "Catan", players: "3-4", difficulty: "⭐⭐", icon: Map },
@@ -43,14 +44,18 @@ const Index = () => {
             <span className="text-foreground">Board Café</span>
           </h1>
 
-          <p className="text-xl md:text-2xl font-heading text-accent/80 mb-2 opacity-0 animate-fade-in" style={{ animationDelay: "0.4s" }}>
-            Roll. Play. Repeat.
-          </p>
+          {/* Dice + tagline */}
+          <div className="flex items-center justify-center gap-3 mb-2 opacity-0 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+            <AnimatedDice />
+            <p className="text-xl md:text-2xl font-heading text-accent/80">
+              Roll. Play. Repeat.
+            </p>
+          </div>
 
           <p className="text-muted-foreground max-w-xl mx-auto mb-8 opacity-0 animate-fade-in" style={{ animationDelay: "0.6s" }}>
             {t(
-              "Bước vào quán rượu phiêu lưu – nơi bạn bè, board game và cà phê ngon hội tụ.",
-              "Enter the adventure tavern – where friends, board games, and great coffee come together."
+              "Bước vào không gian phiêu lưu – nơi bạn bè, board game và cà phê ngon hội tụ.",
+              "Enter the play space – where friends, board games, and great coffee come together."
             )}
           </p>
 
@@ -80,7 +85,7 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="font-heading font-bold text-3xl md:text-4xl mb-6">
-                <span className="glow-text">{t("Chào mừng đến quán rượu", "Welcome to the Tavern")}</span>
+                <span className="glow-text">{t("Chào mừng đến Game On!", "Welcome to Game On!")}</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 {t(
@@ -96,7 +101,7 @@ const Index = () => {
               </p>
             </div>
             <div className="fantasy-border overflow-hidden">
-              <img src={cafeImage} alt={t("Không gian quán", "Café interior")} className="w-full h-72 md:h-80 object-cover" loading="lazy" width={1280} height={720} />
+              <img src={boardgameImage} alt={t("Không gian chơi game", "Board game play space")} className="w-full h-72 md:h-80 object-cover" loading="lazy" width={1280} height={720} />
             </div>
           </div>
         </div>
