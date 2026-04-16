@@ -1,15 +1,15 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Dice5, Users, Coffee, Gamepad2, Star, ArrowRight, Shuffle, Sword, Shield, Map } from "lucide-react";
+import { Dice5, Users, Coffee, Gamepad2, Star, ArrowRight, Shuffle } from "lucide-react";
 import heroImage from "@/assets/hero-tavern.jpg";
 import boardgameImage from "@/assets/boardgame-table.jpg";
 import AnimatedDice from "@/components/AnimatedDice";
 
 const featuredGames = [
-  { name: "Catan", players: "3-4", difficulty: "⭐⭐", icon: Map },
-  { name: "Ticket to Ride", players: "2-5", difficulty: "⭐⭐", icon: Map },
-  { name: "Codenames", players: "4-8", difficulty: "⭐", icon: Shield },
-  { name: "Azul", players: "2-4", difficulty: "⭐⭐", icon: Sword },
+  { name: "Catan", players: "3-4", difficulty: "⭐⭐", image: "🏝️", descVi: "Xây dựng, giao dịch và chinh phục đảo.", descEn: "Build, trade, and settle the island." },
+  { name: "Ticket to Ride", players: "2-5", difficulty: "⭐⭐", image: "🚂", descVi: "Xây dựng tuyến đường sắt xuyên lục địa.", descEn: "Build railway routes across the map." },
+  { name: "Codenames", players: "4-8", difficulty: "⭐", image: "🕵️", descVi: "Trò chơi giải mã từ khóa theo nhóm.", descEn: "Team-based word guessing game." },
+  { name: "Azul", players: "2-4", difficulty: "⭐⭐", image: "🎨", descVi: "Sắp xếp gạch mosaic tuyệt đẹp.", descEn: "Create beautiful mosaic patterns." },
 ];
 
 const Index = () => {
@@ -144,10 +144,9 @@ const Index = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {featuredGames.map((game, i) => (
               <div key={i} className="quest-card p-5 text-center group cursor-pointer">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-                  <game.icon className="w-6 h-6 text-accent" />
-                </div>
+                <div className="text-4xl mb-3">{game.image}</div>
                 <h3 className="font-heading font-semibold text-sm mb-1">{game.name}</h3>
+                <p className="text-xs text-muted-foreground mb-2">{t(game.descVi, game.descEn)}</p>
                 <p className="text-xs text-muted-foreground">{game.players} {t("người", "players")}</p>
                 <p className="text-xs text-accent mt-1">{game.difficulty}</p>
               </div>
