@@ -2,9 +2,16 @@ import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CalendarDays, Clock, Users, MessageSquare, CheckCircle } from "lucide-react";
 
-const timeSlots = [
-  "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"
-];
+const timeSlots = (() => {
+  const slots: string[] = [];
+  let h = 10, m = 0;
+  while (h < 22 || (h === 22 && m <= 30)) {
+    slots.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+    m += 15;
+    if (m >= 60) { m = 0; h += 1; }
+  }
+  return slots;
+})();
 
 const Booking = () => {
   const { t } = useLanguage();
@@ -88,7 +95,7 @@ const Booking = () => {
                 {[2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
                   <option key={n} value={n}>{n} {t("người", "players")}</option>
                 ))}
-                <option value="custom">{t("Khác (tự nhập)", "Other (enter value)")}</option>
+                <option value="custom">{t("Khác", "Other")}</option>
               </select>
               {!["2","3","4","5","6","7","8","9","10"].includes(form.players) && (
                 <input
@@ -108,6 +115,21 @@ const Booking = () => {
               <Clock className="w-4 h-4" />
               {t("Chọn giờ", "Time Slot")}
             </label>
+            <input
+              type="time"
+              value={form.time}
+              onChange={(e) => setForm({ ...form, time: e.target.value })}
+              list="time-slot-options"
+              min="10:00"
+              max="22:30"
+              step={900}
+              className="w-full bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 mb-3"
+            />
+            <datalist id="time-slot-options">
+              {timeSlots.map((slot) => (
+                <option key={slot} value={slot} />
+              ))}
+            </datalist>
             <div className="grid grid-cols-4 gap-2">
               {timeSlots.map((slot) => (
                 <button
