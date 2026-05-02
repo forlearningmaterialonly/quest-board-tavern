@@ -16,6 +16,22 @@ const timeSlots = (() => {
   return slots;
 })();
 
+// Start time options stop at 21:30 (latest allowed start)
+const startTimeSlots = timeSlots.filter((s) => s <= "21:30");
+
+// Add minutes to "HH:MM" string, returns "HH:MM" or null if out of range
+const addMinutes = (time: string, mins: number): string | null => {
+  const [h, m] = time.split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return null;
+  const total = h * 60 + m + mins;
+  const nh = Math.floor(total / 60);
+  const nm = total % 60;
+  if (nh > 23) return null;
+  return `${String(nh).padStart(2, "0")}:${String(nm).padStart(2, "0")}`;
+};
+
+const TIME_PATTERN = "^([01][0-9]|2[0-3]):[0-5][0-9]$";
+
 // Mocked occupancy per slot (in real app this comes from backend).
 // Deterministic pseudo-random so the visual is stable across renders.
 const mockOccupancy: Record<string, number> = (() => {
