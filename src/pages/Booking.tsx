@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CalendarDays, Clock, Users, MessageSquare, CheckCircle, User, Phone, Info } from "lucide-react";
 
