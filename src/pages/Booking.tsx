@@ -80,11 +80,26 @@ const Booking = () => {
                 <Users className="w-4 h-4" />
                 {t("Số người", "Players")}
               </label>
-              <select value={form.players} onChange={(e) => setForm({ ...form, players: e.target.value })} className="w-full bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50">
+              <select
+                value={["2","3","4","5","6","7","8","9","10"].includes(form.players) ? form.players : "custom"}
+                onChange={(e) => setForm({ ...form, players: e.target.value === "custom" ? "" : e.target.value })}
+                className="w-full bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50"
+              >
                 {[2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
                   <option key={n} value={n}>{n} {t("người", "players")}</option>
                 ))}
+                <option value="custom">{t("Khác (tự nhập)", "Other (enter value)")}</option>
               </select>
+              {!["2","3","4","5","6","7","8","9","10"].includes(form.players) && (
+                <input
+                  type="number"
+                  min={1}
+                  value={form.players}
+                  onChange={(e) => setForm({ ...form, players: e.target.value })}
+                  placeholder={t("Nhập số người", "Enter number of players")}
+                  className="mt-2 w-full bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50"
+                />
+              )}
             </div>
           </div>
 
