@@ -225,13 +225,15 @@ const Booking = () => {
                 </label>
                 <input
                   required
-                  type="time"
+                  type="text"
+                  inputMode="numeric"
                   value={form.startTime}
                   onChange={(e) => setForm({ ...form, startTime: e.target.value })}
-                  list="time-slot-options"
-                  min="10:00"
-                  max="22:30"
-                  step={900}
+                  list="start-time-options"
+                  pattern={TIME_PATTERN}
+                  placeholder="HH:MM"
+                  maxLength={5}
+                  title={t("Định dạng 24h, từ 10:00 đến 21:30", "24h format, between 10:00 and 21:30")}
                   className="w-full bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50"
                 />
               </div>
@@ -242,18 +244,26 @@ const Booking = () => {
                   <span className="text-muted-foreground text-xs font-normal">({t("tuỳ chọn", "optional")})</span>
                 </label>
                 <input
-                  type="time"
+                  type="text"
+                  inputMode="numeric"
                   value={form.endTime}
                   onChange={(e) => setForm({ ...form, endTime: e.target.value })}
-                  list="time-slot-options"
-                  min={form.startTime || "10:00"}
-                  max="22:30"
-                  step={900}
-                  className="w-full bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50"
+                  list="end-time-options"
+                  pattern={TIME_PATTERN}
+                  placeholder={minEndTime ? `≥ ${minEndTime}` : "HH:MM"}
+                  maxLength={5}
+                  disabled={!form.startTime}
+                  title={t("Tối thiểu 30 phút sau giờ bắt đầu", "At least 30 minutes after start time")}
+                  className="w-full bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 disabled:opacity-50"
                 />
               </div>
-              <datalist id="time-slot-options">
-                {timeSlots.map((slot) => (
+              <datalist id="start-time-options">
+                {startTimeSlots.map((slot) => (
+                  <option key={slot} value={slot} />
+                ))}
+              </datalist>
+              <datalist id="end-time-options">
+                {endTimeOptions.map((slot) => (
                   <option key={slot} value={slot} />
                 ))}
               </datalist>
