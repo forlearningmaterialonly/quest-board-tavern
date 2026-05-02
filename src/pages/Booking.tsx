@@ -64,6 +64,24 @@ const Booking = () => {
   const startAvailable = TOTAL_TABLES - startBooked;
   const noTablesAvailable = form.startTime !== "" && startAvailable <= 0;
 
+  const minEndTime = form.startTime ? addMinutes(form.startTime, 30) : null;
+  const endTimeOptions = minEndTime ? timeSlots.filter((s) => s >= minEndTime) : timeSlots;
+
+  // Auto-clear end time if it becomes invalid after start time changes
+  useEffect(() => {
+    if (form.endTime && minEndTime && form.endTime < minEndTime) {
+      setForm((f) => ({ ...f, endTime: "" }));
+    }
+  }, [form.startTime]);
+
+  // Scroll selected slot into view (centered) in the availability panel
+  const slotRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  useEffect(() => {
+    if (form.startTime && slotRefs.current[form.startTime]) {
+      slotRefs.current[form.startTime]?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [form.startTime]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
