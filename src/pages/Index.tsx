@@ -116,7 +116,7 @@ const Index = () => {
           <div className="grid sm:grid-cols-3 gap-6">
             {[
               { icon: Gamepad2, title: t("50+ Board Games", "50+ Board Games"), desc: t("Từ party game đến chiến thuật nặng đô", "From party games to heavy strategy") },
-              { icon: Coffee, title: t("Đồ uống hấp dẫn", "Great Drinks"), desc: t("Khu vực thoải mái cho nhóm 2-8 người chơi", "Comfortable area for groups of 2-8 players") },
+              { icon: Coffee, title: t("Đồ uống hấp dẫn", "Great Drinks"), desc: t("Cà phê, trà sữa, nước ép và thức uống theo mùa", "Coffee, milk tea, juices and seasonal drinks") },
               { icon: Users, title: t("Không gian nhóm", "Group Space"), desc: t("Khu vực thoải mái cho 2-10 người chơi", "Comfortable area for 2-10 players") },
             ].map((feat, i) => (
               <div key={i} className="quest-card p-6 text-center">
