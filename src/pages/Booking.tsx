@@ -352,12 +352,15 @@ const Booking = () => {
                     ? "bg-accent/70"
                     : "bg-forest";
                 const isSelected = form.startTime === slot;
+                const isStartable = slot <= "21:30";
                 return (
                   <button
                     type="button"
                     key={slot}
+                    ref={(el) => { slotRefs.current[slot] = el; }}
+                    disabled={!isStartable}
                     onClick={() => setForm({ ...form, startTime: slot })}
-                    className={`w-full flex items-center gap-3 p-2 rounded-md border text-left transition-all hover:border-accent/50 ${
+                    className={`w-full flex items-center gap-3 p-2 rounded-md border text-left transition-all hover:border-accent/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-border ${
                       isSelected ? "border-accent bg-accent/10" : "border-border bg-input/40"
                     }`}
                   >
