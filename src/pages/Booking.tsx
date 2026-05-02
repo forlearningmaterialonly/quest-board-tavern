@@ -115,6 +115,21 @@ const Booking = () => {
               <Clock className="w-4 h-4" />
               {t("Chọn giờ", "Time Slot")}
             </label>
+            <input
+              type="time"
+              value={form.time}
+              onChange={(e) => setForm({ ...form, time: e.target.value })}
+              list="time-slot-options"
+              min="10:00"
+              max="22:30"
+              step={900}
+              className="w-full bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 mb-3"
+            />
+            <datalist id="time-slot-options">
+              {timeSlots.map((slot) => (
+                <option key={slot} value={slot} />
+              ))}
+            </datalist>
             <div className="grid grid-cols-4 gap-2">
               {timeSlots.map((slot) => (
                 <button
