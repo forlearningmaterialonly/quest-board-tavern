@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { CalendarDays, Clock, Users, MessageSquare, CheckCircle, User, Phone, Info } from "lucide-react";
 
@@ -15,6 +15,22 @@ const timeSlots = (() => {
   }
   return slots;
 })();
+
+// Start time options stop at 21:30 (latest allowed start)
+const startTimeSlots = timeSlots.filter((s) => s <= "21:30");
+
+// Add minutes to "HH:MM" string, returns "HH:MM" or null if out of range
+const addMinutes = (time: string, mins: number): string | null => {
+  const [h, m] = time.split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return null;
+  const total = h * 60 + m + mins;
+  const nh = Math.floor(total / 60);
+  const nm = total % 60;
+  if (nh > 23) return null;
+  return `${String(nh).padStart(2, "0")}:${String(nm).padStart(2, "0")}`;
+};
+
+const TIME_PATTERN = "^([01][0-9]|2[0-3]):[0-5][0-9]$";
 
 // Mocked occupancy per slot (in real app this comes from backend).
 // Deterministic pseudo-random so the visual is stable across renders.
@@ -47,6 +63,24 @@ const Booking = () => {
   const startBooked = form.startTime ? mockOccupancy[form.startTime] ?? 0 : 0;
   const startAvailable = TOTAL_TABLES - startBooked;
   const noTablesAvailable = form.startTime !== "" && startAvailable <= 0;
+
+  const minEndTime = form.startTime ? addMinutes(form.startTime, 30) : null;
+  const endTimeOptions = minEndTime ? timeSlots.filter((s) => s >= minEndTime) : timeSlots;
+
+  // Auto-clear end time if it becomes invalid after start time changes
+  useEffect(() => {
+    if (form.endTime && minEndTime && form.endTime < minEndTime) {
+      setForm((f) => ({ ...f, endTime: "" }));
+    }
+  }, [form.startTime]);
+
+  // Scroll selected slot into view (centered) in the availability panel
+  const slotRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  useEffect(() => {
+    if (form.startTime && slotRefs.current[form.startTime]) {
+      slotRefs.current[form.startTime]?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [form.startTime]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -191,13 +225,15 @@ const Booking = () => {
                 </label>
                 <input
                   required
-                  type="time"
+                  type="text"
+                  inputMode="numeric"
                   value={form.startTime}
                   onChange={(e) => setForm({ ...form, startTime: e.target.value })}
-                  list="time-slot-options"
-                  min="10:00"
-                  max="22:30"
-                  step={900}
+                  list="start-time-options"
+                  pattern={TIME_PATTERN}
+                  placeholder="HH:MM"
+                  maxLength={5}
+                  title={t("Định dạng 24h, từ 10:00 đến 21:30", "24h format, between 10:00 and 21:30")}
                   className="w-full bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50"
                 />
               </div>
@@ -208,18 +244,26 @@ const Booking = () => {
                   <span className="text-muted-foreground text-xs font-normal">({t("tuỳ chọn", "optional")})</span>
                 </label>
                 <input
-                  type="time"
+                  type="text"
+                  inputMode="numeric"
                   value={form.endTime}
                   onChange={(e) => setForm({ ...form, endTime: e.target.value })}
-                  list="time-slot-options"
-                  min={form.startTime || "10:00"}
-                  max="22:30"
-                  step={900}
-                  className="w-full bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50"
+                  list="end-time-options"
+                  pattern={TIME_PATTERN}
+                  placeholder={minEndTime ? `≥ ${minEndTime}` : "HH:MM"}
+                  maxLength={5}
+                  disabled={!form.startTime}
+                  title={t("Tối thiểu 30 phút sau giờ bắt đầu", "At least 30 minutes after start time")}
+                  className="w-full bg-input border border-border rounded-lg px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 disabled:opacity-50"
                 />
               </div>
-              <datalist id="time-slot-options">
-                {timeSlots.map((slot) => (
+              <datalist id="start-time-options">
+                {startTimeSlots.map((slot) => (
+                  <option key={slot} value={slot} />
+                ))}
+              </datalist>
+              <datalist id="end-time-options">
+                {endTimeOptions.map((slot) => (
                   <option key={slot} value={slot} />
                 ))}
               </datalist>
@@ -308,12 +352,15 @@ const Booking = () => {
                     ? "bg-accent/70"
                     : "bg-forest";
                 const isSelected = form.startTime === slot;
+                const isStartable = slot <= "21:30";
                 return (
                   <button
                     type="button"
                     key={slot}
+                    ref={(el) => { slotRefs.current[slot] = el; }}
+                    disabled={!isStartable}
                     onClick={() => setForm({ ...form, startTime: slot })}
-                    className={`w-full flex items-center gap-3 p-2 rounded-md border text-left transition-all hover:border-accent/50 ${
+                    className={`w-full flex items-center gap-3 p-2 rounded-md border text-left transition-all hover:border-accent/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-border ${
                       isSelected ? "border-accent bg-accent/10" : "border-border bg-input/40"
                     }`}
                   >
