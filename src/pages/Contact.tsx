@@ -57,7 +57,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-accent mb-1">{t("Điện thoại", "Phone")}</h3>
-                  <p className="text-sm text-muted-foreground">0909 123 456</p>
+                  <p className="text-sm text-muted-foreground">0948 305 658</p>
                 </div>
               </div>
             </div>
