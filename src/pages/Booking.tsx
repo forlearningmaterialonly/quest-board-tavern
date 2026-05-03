@@ -370,8 +370,8 @@ const Booking = () => {
                 <Info className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   {t(
-                    "Khung giờ này hiện đã hết bàn. Bạn vẫn có thể gửi yêu cầu — tụi mình sẽ kiểm tra lại và liên lạc bạn sớm nhất.",
-                    "This time slot appears full. You can still submit — we'll double-check and contact you shortly.",
+                    "Khung giờ này có thể đã hết bàn. Đừng lo, hãy gửi yêu cầu để tụi mình kiểm tra tình trạng bàn thực tế và báo lại cho bạn ngay nhé!",
+                    "This time slot might be full. Don't worry, submit your request and we'll check the actual availability and get back to you immediately!",
                   )}
                 </p>
               </div>
