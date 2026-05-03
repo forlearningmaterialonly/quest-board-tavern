@@ -77,6 +77,10 @@ export default {
           DEFAULT: "hsl(var(--parchment))",
           dark: "hsl(var(--parchment-dark))",
         },
+        ember: {
+          DEFAULT: "hsl(var(--ember))",
+          light: "hsl(var(--ember-light))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
