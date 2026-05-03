@@ -368,7 +368,7 @@ const Booking = () => {
             {noTablesAvailable && (
               <div className="flex gap-3 p-4 rounded-lg border border-accent/40 bg-accent/5">
                 <Info className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-sm text-foreground/90 leading-relaxed">
                   {t(
                     "Khung giờ này có thể đã hết bàn. Đừng lo, hãy gửi yêu cầu để tụi mình kiểm tra tình trạng bàn thực tế và báo lại cho bạn ngay nhé!",
                     "This time slot might be full. Don't worry, submit your request and we'll check the actual availability and get back to you immediately!",
