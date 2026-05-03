@@ -315,7 +315,15 @@ const Booking = () => {
                     {startTimeSlots.map((slot) => {
                       const booked = occupancyForDate[slot] ?? 0;
                       const free = TOTAL_TABLES - booked;
+                      const ratio = booked / TOTAL_TABLES;
                       const isSelected = form.startTime === slot;
+                      const isFull = free <= 0;
+                      const isNearly = !isFull && ratio >= 0.7;
+                      const labelClass = isFull
+                        ? "text-ember"
+                        : isNearly
+                        ? "text-accent"
+                        : "text-muted-foreground";
                       return (
                         <button
                           type="button"
@@ -329,8 +337,8 @@ const Booking = () => {
                           }`}
                         >
                           <span className="font-heading">{slot}</span>
-                          <span className={`text-xs ${free <= 0 ? "text-destructive" : free <= 3 ? "text-accent" : "text-muted-foreground"}`}>
-                            {free <= 0 ? t("Hết", "Full") : `${free}/${TOTAL_TABLES}`}
+                          <span className={`text-xs ${labelClass}`}>
+                            {isFull ? t("Liên hệ", "Contact") : `${free}/${TOTAL_TABLES}`}
                           </span>
                         </button>
                       );
