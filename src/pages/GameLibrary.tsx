@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Users, Star, Search, Shuffle } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface Game {
   name: string;
@@ -33,6 +34,9 @@ const GameLibrary = () => {
   const [filterPlayers, setFilterPlayers] = useState("");
   const [filterDiff, setFilterDiff] = useState("");
   const [filterCat, setFilterCat] = useState("");
+  const [rolling, setRolling] = useState(false);
+  const [rollPreview, setRollPreview] = useState<Game | null>(null);
+  const [pickedGame, setPickedGame] = useState<Game | null>(null);
 
   const filtered = games.filter((g) => {
     if (search && !g.name.toLowerCase().includes(search.toLowerCase())) return false;
@@ -48,8 +52,30 @@ const GameLibrary = () => {
   });
 
   const randomPick = () => {
-    const g = filtered[Math.floor(Math.random() * filtered.length)];
-    if (g) alert(`🎲 ${g.name}!`);
+    if (rolling || filtered.length === 0) return;
+    setRolling(true);
+    setPickedGame(null);
+
+    const finalPick = filtered[Math.floor(Math.random() * filtered.length)];
+    const totalDuration = 1400;
+    const start = performance.now();
+
+    const tick = () => {
+      const elapsed = performance.now() - start;
+      const progress = Math.min(elapsed / totalDuration, 1);
+      // Ease-out interval: fast at first, slows toward end
+      const interval = 60 + progress * 220;
+      setRollPreview(filtered[Math.floor(Math.random() * filtered.length)]);
+
+      if (elapsed < totalDuration) {
+        setTimeout(tick, interval);
+      } else {
+        setRollPreview(finalPick);
+        setRolling(false);
+        setPickedGame(finalPick);
+      }
+    };
+    tick();
   };
 
   return (
@@ -101,9 +127,13 @@ const GameLibrary = () => {
             <option value="family">{t("Gia đình", "Family")}</option>
           </select>
 
-          <button onClick={randomPick} className="btn-gold inline-flex items-center gap-2 text-sm !px-4 !py-2">
-            <Shuffle className="w-4 h-4" />
-            {t("Chọn ngẫu nhiên", "Random Pick")}
+          <button
+            onClick={randomPick}
+            disabled={rolling}
+            className="btn-gold inline-flex items-center gap-2 text-sm !px-4 !py-2 disabled:opacity-70"
+          >
+            <Shuffle className={`w-4 h-4 ${rolling ? "animate-spin" : ""}`} />
+            {rolling ? t("Đang quay...", "Rolling...") : t("Chọn ngẫu nhiên", "Random Pick")}
           </button>
         </div>
 
@@ -132,6 +162,73 @@ const GameLibrary = () => {
         {filtered.length === 0 && (
           <p className="text-center text-muted-foreground py-12">{t("Không tìm thấy game nào.", "No games found.")}</p>
         )}
+
+        {/* Random Pick Modal */}
+        <Dialog
+          open={rolling || !!pickedGame}
+          onOpenChange={(open) => {
+            if (!open && !rolling) {
+              setPickedGame(null);
+              setRollPreview(null);
+            }
+          }}
+        >
+          <DialogContent className="max-w-md text-center bg-card border-accent/30">
+            <DialogHeader>
+              <DialogTitle className="font-heading text-2xl glow-text">
+                {rolling
+                  ? t("🎲 Đang chọn nhiệm vụ...", "🎲 Rolling the dice...")
+                  : t("Nhiệm vụ của bạn!", "Your Quest!")}
+              </DialogTitle>
+              <DialogDescription>
+                {rolling
+                  ? t("Vận may đang gọi tên bạn", "Fate is choosing your game")
+                  : t("Hãy thử ngay tại quán nhé", "Give it a try at the café")}
+              </DialogDescription>
+            </DialogHeader>
+
+            {rollPreview && (
+              <div
+                key={rollPreview.name + (rolling ? Math.random() : "final")}
+                className={`py-4 ${rolling ? "animate-fade-in" : "animate-scale-in"}`}
+              >
+                <div className={`text-7xl mb-4 inline-block ${rolling ? "animate-spin" : "animate-float"}`}>
+                  {rollPreview.image}
+                </div>
+                <h3 className="font-heading font-bold text-2xl mb-2 text-accent">
+                  {rollPreview.name}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  {t(rollPreview.descVi, rollPreview.descEn)}
+                </p>
+                <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Users className="w-4 h-4" /> {rollPreview.players}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    {Array(rollPreview.difficulty).fill(0).map((_, j) => (
+                      <Star key={j} className="w-4 h-4 fill-accent text-accent" />
+                    ))}
+                  </span>
+                  <span className="text-xs bg-accent/10 text-accent rounded-full px-2 py-0.5 capitalize">
+                    {rollPreview.category === "strategy"
+                      ? t("Chiến thuật", "Strategy")
+                      : rollPreview.category === "family"
+                      ? t("Gia đình", "Family")
+                      : "Party"}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {!rolling && pickedGame && (
+              <button onClick={randomPick} className="btn-gold inline-flex items-center gap-2 text-sm !px-4 !py-2 mx-auto">
+                <Shuffle className="w-4 h-4" />
+                {t("Quay lại lần nữa", "Roll again")}
+              </button>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
