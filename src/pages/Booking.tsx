@@ -79,7 +79,7 @@ const Booking = () => {
         label: (vn) => {
           if (i === 0) return vn ? `Hôm nay (${dd}/${mm})` : `Today (${dd}/${mm})`;
           if (i === 1) return vn ? `Ngày mai (${dd}/${mm})` : `Tomorrow (${dd}/${mm})`;
-          return vn ? `${dayNamesVN[dow]} ${dd}/${mm}` : `${dayNamesEN[dow]} ${dd}/${mm}`;
+          return vn ? `${dayNamesVN[dow]} (${dd}/${mm})` : `${dayNamesEN[dow]} (${dd}/${mm})`;
         },
       });
     }
