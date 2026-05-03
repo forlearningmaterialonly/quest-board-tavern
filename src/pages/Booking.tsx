@@ -315,7 +315,15 @@ const Booking = () => {
                     {startTimeSlots.map((slot) => {
                       const booked = occupancyForDate[slot] ?? 0;
                       const free = TOTAL_TABLES - booked;
+                      const ratio = booked / TOTAL_TABLES;
                       const isSelected = form.startTime === slot;
+                      const isFull = free <= 0;
+                      const isNearly = !isFull && ratio >= 0.7;
+                      const labelClass = isFull
+                        ? "text-ember"
+                        : isNearly
+                        ? "text-accent"
+                        : "text-muted-foreground";
                       return (
                         <button
                           type="button"
@@ -329,8 +337,8 @@ const Booking = () => {
                           }`}
                         >
                           <span className="font-heading">{slot}</span>
-                          <span className={`text-xs ${free <= 0 ? "text-destructive" : free <= 3 ? "text-accent" : "text-muted-foreground"}`}>
-                            {free <= 0 ? t("Hết", "Full") : `${free}/${TOTAL_TABLES}`}
+                          <span className={`text-xs ${labelClass}`}>
+                            {isFull ? t("Liên hệ", "Contact") : `${free}/${TOTAL_TABLES}`}
                           </span>
                         </button>
                       );
@@ -392,34 +400,50 @@ const Booking = () => {
               )}
             </div>
 
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-sm bg-forest border border-forest-light" />
-                {t("Còn trống", "Free")}
+                {t("Còn trống", "Available")}
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-sm bg-accent/70 border border-accent" />
-                {t("Sắp hết", "Few left")}
+                {t("Gần đầy", "Nearly full")}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-sm bg-destructive/70 border border-destructive" />
-                {t("Hết bàn", "Full")}
+                <span className="w-3 h-3 rounded-sm bg-ember/80 border border-ember" />
+                {t("Liên hệ để sắp xếp", "Contact us")}
               </span>
             </div>
 
             <div className="max-h-[420px] overflow-y-auto pr-1 space-y-1.5">
-              {timeSlots.map((slot) => {
-                const booked = occupancyForDate[slot] ?? 0;
+              {timeSlots.filter((s) => s.endsWith(":00") || s.endsWith(":30")).map((slot) => {
+                // Group by 30-min interval: occupancy = max of the slot and the +15 sub-slot
+                const subSlot = (() => {
+                  const [h, m] = slot.split(":").map(Number);
+                  const nm = m + 15;
+                  return nm < 60 ? `${String(h).padStart(2,"0")}:${String(nm).padStart(2,"0")}` : null;
+                })();
+                const bookedRaw = Math.max(
+                  occupancyForDate[slot] ?? 0,
+                  subSlot ? (occupancyForDate[subSlot] ?? 0) : 0,
+                );
+                const booked = Math.min(TOTAL_TABLES, bookedRaw);
                 const free = TOTAL_TABLES - booked;
-                const pct = (booked / TOTAL_TABLES) * 100;
-                const status =
-                  free <= 0 ? "full" : free <= 3 ? "few" : "free";
+                const ratio = booked / TOTAL_TABLES;
+                const pct = ratio * 100;
+                const status = free <= 0 ? "full" : ratio >= 0.7 ? "near" : "free";
                 const barColor =
                   status === "full"
-                    ? "bg-destructive/70"
-                    : status === "few"
+                    ? "bg-ember/80"
+                    : status === "near"
                     ? "bg-accent/70"
                     : "bg-forest";
+                const textColor =
+                  status === "full"
+                    ? "text-ember"
+                    : status === "near"
+                    ? "text-accent"
+                    : "text-muted-foreground";
                 const isSelected = form.startTime === slot;
                 const isStartable = slot <= "21:30";
                 return (
@@ -437,16 +461,8 @@ const Booking = () => {
                     <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
                       <div className={`h-full ${barColor} transition-all`} style={{ width: `${pct}%` }} />
                     </div>
-                    <span
-                      className={`text-xs font-heading w-16 text-right shrink-0 ${
-                        status === "full"
-                          ? "text-destructive"
-                          : status === "few"
-                          ? "text-accent"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {free}/{TOTAL_TABLES}
+                    <span className={`text-xs font-heading w-20 text-right shrink-0 ${textColor}`}>
+                      {status === "full" ? t("Liên hệ", "Contact") : `${free}/${TOTAL_TABLES}`}
                     </span>
                   </button>
                 );
