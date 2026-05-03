@@ -469,12 +469,12 @@ const Booking = () => {
               })}
             </div>
 
-            <div className="flex gap-2 p-3 rounded-md bg-muted/40 border border-border">
+            <div className="flex gap-2 p-3 rounded-md bg-muted/60 border border-border">
               <Info className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-              <p className="text-[11px] text-muted-foreground leading-relaxed">
+              <p className="text-sm text-foreground/90 leading-relaxed">
                 {t(
-                  "Mỗi lượt đặt được tính block 4 tiếng. Tình trạng có thể thay đổi do khách walk-in hoặc kéo dài thời gian chơi. Nếu hết bàn, tụi mình sẽ kiểm tra lại lịch và liên lạc bạn để sắp xếp.",
-                  "Each booking blocks a table for 4 hours. Availability may change due to walk-ins or extended play sessions. If we're full, we'll re-check and contact you to arrange.",
+                  "Tình trạng có thể thay đổi do khách walk-in hoặc kéo dài thời gian chơi. Nếu hết bàn, tụi mình sẽ kiểm tra lại lịch và liên lạc bạn để sắp xếp.",
+                  "Availability may change due to walk-ins or extended play sessions. If we're full, we'll re-check and contact you to arrange.",
                 )}
               </p>
             </div>
