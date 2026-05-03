@@ -172,7 +172,7 @@ const Index = () => {
             {[
               { name: "Phương Châu", text: t("Không gian cực chill, game nhiều, nhân viên tư vấn nhiệt tình!", "Super chill vibe, tons of games, staff helped us pick the perfect one!"), stars: 5 },
               { name: "Trung Khang", text: t("Đi cùng nhóm 6 người, chơi Catan 3 ván liên tiếp. Sẽ quay lại!", "Went with a group of 6, played 3 rounds of Catan. Will be back!"), stars: 5 },
-              { name: "Hà My", text: t("Trà sữa ngon, board game hay, giá cả hợp lý. 10/10!", "Great milk tea, awesome board games, affordable prices. 10/10!"), stars: 5 },
+              { name: "Văn Minh", text: t("Trà sữa ngon, board game hay, giá cả hợp lý. 10/10!", "Great milk tea, awesome board games, affordable prices. 10/10!"), stars: 5 },
             ].map((review, i) => (
               <div key={i} className="quest-card p-6">
                 <div className="flex gap-1 mb-3">
