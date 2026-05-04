@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import GoldParticles from "@/components/GoldParticles";
+import TavernLoader from "@/components/TavernLoader";
 import Index from "./pages/Index";
 import GameLibrary from "./pages/GameLibrary";
 import MenuPage from "./pages/MenuPage";
@@ -24,6 +25,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <TavernLoader />
           <GoldParticles />
           <Navbar />
           <Routes>
